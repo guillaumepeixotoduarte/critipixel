@@ -11,11 +11,17 @@ final class UserFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        $users = array_fill_callback(0, 10, fn (int $index): User => (new User)
-            ->setEmail(sprintf('user+%d@email.com', $index))
-            ->setPlainPassword('password')
-            ->setUsername(sprintf('user+%d', $index))
-        );
+        $users = array_fill_callback(0, 10, function (int $index) {
+            $user = (new User)
+                ->setEmail(sprintf('user+%d@email.com', $index))
+                ->setPlainPassword('password')
+                ->setUsername(sprintf('user+%d', $index));
+
+            // 💡 On ajoute la référence à la volée
+            $this->addReference('user_' . $index, $user);
+
+            return $user;
+        });
 
         array_walk($users, [$manager, 'persist']);
 

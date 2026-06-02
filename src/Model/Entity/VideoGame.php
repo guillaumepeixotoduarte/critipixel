@@ -223,6 +223,22 @@ class VideoGame
         return $this->tags;
     }
 
+    public function addTag(Tag $tag): static
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
+        }
+
+        return $this;
+    }
+
+    public function removeTag(Tag $tag): static
+    {
+        $this->tags->removeElement($tag);
+
+        return $this;
+    }
+
     /**
      * @return Collection<Review>
      */
