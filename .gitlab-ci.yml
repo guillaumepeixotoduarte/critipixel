@@ -45,8 +45,7 @@ phpstan:
     - docker-php-ext-install intl
     - php bin/console cache:clear --env=dev
   script:
-    # 💡 Ajout de --debug pour voir précisément quel fichier pose problème en cas de crash
-    - vendor/bin/phpstan analyse src tests --level=9 --debug
+    - vendor/bin/phpstan analyse src tests --level=9 --memory-limit=-1
 
 phpunit:
   stage: test
@@ -74,7 +73,7 @@ phpunit:
     - php bin/console doctrine:database:create --if-not-exists --env=test
     - php bin/console doctrine:schema:update --force --env=test
     # Optionnel : si tu as des fixtures actives, laisse la ligne suivante, sinon commente-la avec un #
-    - php bin/console doctrine:fixtures:load --no-interaction --env=test
+    - php bin/console doctrine:fixtures:load --no-interaction --quiet --env=test
   script:
     - php bin/phpunit --coverage-text --colors=never
   allow_failure: false
