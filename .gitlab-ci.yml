@@ -18,7 +18,11 @@ install_dependencies:
   stage: build
   before_script:
     # Installation de unzip nécessaire pour Composer
-    - apt-get update && apt-get install -y unzip
+    - apt-get update && apt-get install -y unzip libicu-dev
+    # 2. Configuration et installation de l'extension PHP intl
+    - docker-php-ext-configure intl
+    - docker-php-ext-install intl
+    # 3. Installation de Composer
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
   script:
     - composer install --no-progress --no-suggest --prefer-dist
