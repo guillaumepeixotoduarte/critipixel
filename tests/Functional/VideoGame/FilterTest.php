@@ -55,6 +55,8 @@ final class FilterTest extends FunctionalTestCase
             ->getQuery()
             ->getOneOrNullResult();
 
+        self::assertInstanceOf(VideoGame::class, $videoGame);
+
         self::assertEquals($titles[0], $videoGame->getTitle());
         self::assertSelectorCount(10, 'article.game-card');
     }

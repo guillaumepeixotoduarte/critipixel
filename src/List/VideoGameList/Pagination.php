@@ -13,6 +13,7 @@ use Countable;
 use IteratorAggregate;
 use RuntimeException;
 use Traversable;
+use max;
 
 /**
  * @implements IteratorAggregate<Page>
@@ -32,6 +33,7 @@ final class Pagination implements IteratorAggregate, Countable
 
     public function __construct(
         private int $page,
+        /** @var int<1, max> */
         private int $limit,
         private Sorting $sorting,
         private Direction $direction
@@ -43,13 +45,20 @@ final class Pagination implements IteratorAggregate, Countable
         return ($this->page - 1) * $this->limit;
     }
 
+    /**
+     * @return int<0, max>
+     */
     public function getLastPage(): int
     {
         if (!$this->initialized) {
             throw new RuntimeException('Pagination is not initialized');
         }
 
-        return (int) ceil($this->total / $this->limit);
+        $lastPage = (int) ceil($this->total / $this->limit);
+
+        assert($lastPage >= 0);
+
+        return $lastPage;
     }
 
     public function init(int $total, int $count): void
@@ -67,7 +76,7 @@ final class Pagination implements IteratorAggregate, Countable
     }
 
     /**
-     * @return Traversable<string, int>
+     * @return Traversable<int, Page>
      */
     public function getIterator(): Traversable
     {
@@ -102,11 +111,17 @@ final class Pagination implements IteratorAggregate, Countable
         return $this->limit;
     }
 
+    /**
+     * @return Direction[]
+     */
     public function getDirections(): array
     {
         return Direction::cases();
     }
 
+    /**
+     * @return Sorting[]
+     */
     public function getAllSorting(): array
     {
         return Sorting::cases();
@@ -135,6 +150,9 @@ final class Pagination implements IteratorAggregate, Countable
         ];
     }
 
+    /**
+     * @return int<0, max>
+     */
     public function count(): int
     {
         return $this->getLastPage();

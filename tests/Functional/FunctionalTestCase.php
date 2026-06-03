@@ -26,15 +26,20 @@ abstract class FunctionalTestCase extends WebTestCase
     }
 
     /**
-     * @template T
+     * @template T of object
      * @param class-string<T> $id
      * @return T
      */
     protected function service(string $id): object
     {
-        return $this->client->getContainer()->get($id);
+        /** @var T $service */
+        $service = $this->client->getContainer()->get($id);
+        return $service;
     }
 
+    /**
+     * @param array<string, mixed> $parameters 💡 Spécification du tableau pour le Crawler
+     */
     protected function get(string $uri, array $parameters = []): Crawler
     {
         return $this->client->request('GET', $uri, $parameters);
@@ -43,6 +48,8 @@ abstract class FunctionalTestCase extends WebTestCase
     protected function login(string $email = 'user+0@email.com'): void
     {
         $user = $this->service(EntityManagerInterface::class)->getRepository(User::class)->findOneByEmail($email);
+
+        self::assertNotNull($user, sprintf('Le compte utilisateur avec l\'email "%s" n\'existe pas dans les fixtures de test.', $email));
 
         $this->client->loginUser($user);
     }

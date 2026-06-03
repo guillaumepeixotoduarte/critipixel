@@ -25,7 +25,7 @@ class RatingTest extends TestCase
 
         $calculateAverageRating->calculateAverage($videoGame);
 
-        $this->assertEquals(4, $videoGame->getAverageRating());
+        self::assertEquals(4, $videoGame->getAverageRating());
     }
 
     public function testCalculateAverageWhenNoReviews(): void
@@ -35,7 +35,7 @@ class RatingTest extends TestCase
 
         $ratingHandler->calculateAverage($videoGame);
 
-        $this->assertNull($videoGame->getAverageRating());
+        self::assertNull($videoGame->getAverageRating());
     }
 
     public function testCountRatingsPerValueWithDifferentNumbersOfReviewsRatings(): void
@@ -65,11 +65,11 @@ class RatingTest extends TestCase
         // 3. THEN : On vérifie que les compteurs correspondent à nos injections
         $stats = $videoGame->getNumberOfRatingsPerValue();
 
-        $this->assertEquals(1, $stats->getNumberOfOne());   // 1 seule review de note 1
-        $this->assertEquals(2, $stats->getNumberOfTwo());   // 2 reviews de note 2
-        $this->assertEquals(0, $stats->getNumberOfThree()); // 1 seule review de note 3
-        $this->assertEquals(1, $stats->getNumberOfFour());  // 1 seule review de note 4
-        $this->assertEquals(1, $stats->getNumberOfFive());  // 1 seule review de note 5
+        self::assertEquals(1, $stats->getNumberOfOne());   // 1 seule review de note 1
+        self::assertEquals(2, $stats->getNumberOfTwo());   // 2 reviews de note 2
+        self::assertEquals(0, $stats->getNumberOfThree()); // 1 seule review de note 3
+        self::assertEquals(1, $stats->getNumberOfFour());  // 1 seule review de note 4
+        self::assertEquals(1, $stats->getNumberOfFive());  // 1 seule review de note 5
     }
 
     public function testCountRatingsPerValueWhenNoReviews(): void
@@ -81,10 +81,10 @@ class RatingTest extends TestCase
 
         $stats = $videoGame->getNumberOfRatingsPerValue();
 
-        $this->assertEquals(0, $stats->getNumberOfOne());
-        $this->assertEquals(0, $stats->getNumberOfTwo());
-        $this->assertEquals(0, $stats->getNumberOfThree());
-        $this->assertEquals(0, $stats->getNumberOfFour());
-        $this->assertEquals(0, $stats->getNumberOfFive());
+        self::assertEquals(0, $stats->getNumberOfOne());
+        self::assertEquals(0, $stats->getNumberOfTwo());
+        self::assertEquals(0, $stats->getNumberOfThree());
+        self::assertEquals(0, $stats->getNumberOfFour());
+        self::assertEquals(0, $stats->getNumberOfFive());
     }
 }

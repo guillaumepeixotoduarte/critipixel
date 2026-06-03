@@ -14,13 +14,12 @@ class TagsFixtures extends Fixture
     {
 
         $tags = array_fill_callback(0, 50, function (int $index) {
-
             $tag = (new Tag);
             $tag->setName(sprintf('Tag %d', $index));
             return $tag;
         });
 
-        array_walk($tags, [$manager, 'persist']);
+        array_walk($tags, static fn (Tag $tag) => $manager->persist($tag));
 
         $manager->flush();
     }

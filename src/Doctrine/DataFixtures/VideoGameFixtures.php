@@ -34,9 +34,9 @@ final class VideoGameFixtures extends Fixture implements DependentFixtureInterfa
             $videoGame = (new VideoGame);
             $videoGame
                 ->setTitle(sprintf('Jeu vidéo %d', $index))
-                ->setDescription($this->faker->paragraphs(10, true))
+                ->setDescription($this->faker->paragraph(10, true))
                 ->setReleaseDate(new DateTimeImmutable())
-                ->setTest($this->faker->paragraphs(6, true))
+                ->setTest($this->faker->paragraph(6, true))
                 ->setRating(($index % 5) + 1)
                 ->setImageName(sprintf('video_game_%d.png', $index))
                 ->setImageSize(2_098_872);
@@ -86,7 +86,7 @@ final class VideoGameFixtures extends Fixture implements DependentFixtureInterfa
                         ->setVideoGame($videoGame)
                         ->setUser($users[$i])
                         ->setRating($rating)
-                        ->setComment($this->faker->paragraphs(3, true));
+                        ->setComment($this->faker->paragraph(3, true));
 
                     $manager->persist($review);
                     $videoGame->getReviews()->add($review);
@@ -105,7 +105,7 @@ final class VideoGameFixtures extends Fixture implements DependentFixtureInterfa
             $review->setRating($this->faker->numberBetween(1, 5))
                 ->setVideoGame($videoGame)
                 ->setUser($users[$this->faker->numberBetween(0, count($users) - 1)])
-                ->setComment($this->faker->paragraphs(3, true));
+                ->setComment($this->faker->paragraph(3, true));
 
             return $review;
         });

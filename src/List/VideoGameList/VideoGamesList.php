@@ -33,6 +33,9 @@ final class VideoGamesList implements Countable, IteratorAggregate
 
     private string $route;
 
+    /**
+     * @var array<string, mixed>
+     */
     private array $routeParameters;
 
     public function __construct(
@@ -48,11 +51,16 @@ final class VideoGamesList implements Countable, IteratorAggregate
         return $this->form;
     }
 
-      public function handleRequest(Request $request): self
+    public function handleRequest(Request $request): self
     {
         $this->filter = new Filter();
 
-        $this->route = $request->attributes->get('_route');
+        $route = $request->attributes->get('_route');
+        if (!is_string($route)) {
+            throw new \LogicException('The route must be a string');
+        }
+
+        $this->route = $route;
         $this->routeParameters = $request->query->all();
 
         $this->form = $this->formFactory
