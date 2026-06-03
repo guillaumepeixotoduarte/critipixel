@@ -67,6 +67,8 @@ phpunit:
     - php bin/console doctrine:database:create --if-not-exists --env=test
     - php bin/console doctrine:schema:update --force --env=test
     - php bin/console doctrine:fixtures:load --no-interaction --env=test > /dev/null 2>&1
+
+    - php bin/console sass:build --env=test
   script:
     - php bin/phpunit --coverage-text --colors=never --stop-on-failure 2>&1 | head -n 100
   allow_failure: false
