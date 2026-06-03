@@ -75,5 +75,5 @@ phpunit:
     # Optionnel : si tu as des fixtures actives, laisse la ligne suivante, sinon commente-la avec un #
     - php bin/console doctrine:fixtures:load --no-interaction --env=test > /dev/null 2>&1
   script:
-    - php bin/phpunit --coverage-text --colors=never
+    - php bin/phpunit --coverage-text --colors=never --stop-on-failure 2>&1 | head -n 100
   allow_failure: false
