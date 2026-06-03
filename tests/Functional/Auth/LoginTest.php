@@ -13,8 +13,6 @@ final class LoginTest extends FunctionalTestCase
     {
         $this->get('/auth/login');
 
-        echo $this->client->getResponse()->getContent();
-
         $this->client->submitForm('Se connecter', [
             'email' => 'user+1@email.com',
             'password' => 'password'

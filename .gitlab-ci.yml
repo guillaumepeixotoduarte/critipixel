@@ -71,5 +71,5 @@ phpunit:
     - php bin/console importmap:install --env=test
     - php bin/console sass:build --env=test
   script:
-    - php bin/phpunit --coverage-text --colors=never --stop-on-failure 2>&1 | head -n 100
+    - php bin/phpunit --coverage-text --colors=never
   allow_failure: false
