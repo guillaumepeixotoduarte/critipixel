@@ -48,6 +48,7 @@ phpstan:
     - vendor/bin/phpstan analyse src tests --level=9 --memory-limit=-1
 
 phpunit:
+  image: jakzal/phpqa:1.31-php8.4-alpine
   stage: test
   services:
     - name: mysql:8.0
@@ -60,19 +61,11 @@ phpunit:
     APP_ENV: test
   dependencies:
     - install_dependencies
-  before_script:
-    # 💡 CORRECTION : Installation des paquets système requis en premier
-    - apt-get update && apt-get install -y libpq-dev libicu-dev
-    # Installation des extensions PHP requises
-    - docker-php-ext-install pdo_mysql intl
-    # 💡 CORRECTION : Ajout de || true pour éviter le plantage si déjà installé
-    - pecl install pcov && docker-php-ext-enable pcov || true
-    
+  before_script:    
     # Préparation de la base de données de test
     - php bin/console doctrine:database:drop --force --if-exists --env=test
     - php bin/console doctrine:database:create --if-not-exists --env=test
     - php bin/console doctrine:schema:update --force --env=test
-    # Optionnel : si tu as des fixtures actives, laisse la ligne suivante, sinon commente-la avec un #
     - php bin/console doctrine:fixtures:load --no-interaction --env=test > /dev/null 2>&1
   script:
     - php bin/phpunit --coverage-text --colors=never --stop-on-failure 2>&1 | head -n 100
