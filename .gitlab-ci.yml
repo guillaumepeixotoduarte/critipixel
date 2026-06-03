@@ -15,12 +15,11 @@ stages:
 install_dependencies:
   stage: build
   before_script:
-    # Installation de unzip nécessaire pour Composer
+    # Installation de unzip nécessaire pour Composer et libicu pour intl
     - apt-get update && apt-get install -y unzip libicu-dev
-    # 2. Configuration et installation de l'extension PHP intl
     - docker-php-ext-configure intl
     - docker-php-ext-install intl
-    # 3. Installation de Composer
+    # Installation de Composer
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
   script:
     - composer install --no-progress --no-suggest --prefer-dist
@@ -29,54 +28,53 @@ install_dependencies:
       - vendor/
     expire_in: 1 hr
 
-phpstan: # ou le nom actuel de ton job
+twig_lint:
+  stage: lint
+  before_script:
+    # Symfony a besoin de intl pour charger ses configurations, même pour le linting
+    - apt-get update && apt-get install -y libicu-dev
+    - docker-php-ext-install intl
+  script:
+    - php bin/console lint:twig templates
+
+phpstan:
   image: php:8.4-cli
   stage: test
   before_script:
-    # 1. On s'assure d'avoir les extensions PHP minimales pour Symfony (si pas déjà héritées)
     - apt-get update && apt-get install -y libicu-dev
     - docker-php-ext-install intl
     - php bin/console cache:clear --env=dev
   script:
-    # 3. On lance l'analyse PHPStan maintenant que le dossier var/cache existe
-    - vendor/bin/phpstan analyse src tests --level=9
-
-twig_lint:
-  stage: lint
-  script:
-    - php bin/console lint:twig templates
+    # 💡 Ajout de --debug pour voir précisément quel fichier pose problème en cas de crash
+    - vendor/bin/phpstan analyse src tests --level=9 --debug
 
 phpunit:
   stage: test
   services:
     - name: mysql:8.0
       alias: db_test
-  # 💡 On configure les variables d'environnement pour l'application et pour MySQL
   variables:
-    MYSQL_USER: root
-    MYSQL_PASSWORD: ""
-    MYSQL_ROOT_PASSWORD: ""
+    MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     MYSQL_DATABASE: critipixel_test
-    # On dit à Symfony de se connecter au service "db_test" configuré juste au-dessus
-    DATABASE_URL: "mysql://root:@db_test:3306/criti-pixel_test?serverVersion=8.0.32&charset=utf8mb4"
+    # 💡 CORRECTION : L'hôte est "db_test" (l'alias) et le nom de bdd correspond à MYSQL_DATABASE
+    DATABASE_URL: "mysql://root@db_test:3306/critipixel_test?serverVersion=8.0.46&charset=utf8mb4"
     APP_ENV: test
   dependencies:
     - install_dependencies
   before_script:
-    # On installe et active l'extension Xdebug ou PCOV dans le conteneur pour la couverture
-    - pecl install pcov && docker-php-ext-enable pcov
-    - apt-get update && apt-get install -y libpq-dev
-    - docker-php-ext-install pdo_mysql
-    - pecl install pcov && docker-php-ext-enable pcov
+    # 💡 CORRECTION : Installation des paquets système requis en premier
+    - apt-get update && apt-get install -y libpq-dev libicu-dev
+    # Installation des extensions PHP requises
+    - docker-php-ext-install pdo_mysql intl
+    # 💡 CORRECTION : Ajout de || true pour éviter le plantage si déjà installé
+    - pecl install pcov && docker-php-ext-enable pcov || true
     
-    # 2. Préparation de la base de données de test (on crée le schéma et on charge les fixtures)
+    # Préparation de la base de données de test
     - php bin/console doctrine:database:drop --force --if-exists --env=test
     - php bin/console doctrine:database:create --if-not-exists --env=test
     - php bin/console doctrine:schema:update --force --env=test
+    # Optionnel : si tu as des fixtures actives, laisse la ligne suivante, sinon commente-la avec un #
     - php bin/console doctrine:fixtures:load --no-interaction --env=test
   script:
-    # On configure les variables d'environnement pour le test
-    - export APP_ENV=test
-    # On lance tes 22 tests
     - php bin/phpunit --coverage-text --colors=never
   allow_failure: false
