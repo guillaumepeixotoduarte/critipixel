@@ -63,9 +63,8 @@ phpunit:
   dependencies:
     - install_dependencies
   before_script:    
-    - curl -sSL https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions -o /tmp/install-php-extensions
-    - chmod +x /tmp/install-php-extensions
-    - sudo /tmp/install-php-extensions intl
+    - apt-get update && apt-get install -y libicu-dev
+    - docker-php-ext-install intl
     # Préparation de la base de données de test
     - php bin/console doctrine:database:drop --force --if-exists --env=test
     - php bin/console doctrine:database:create --if-not-exists --env=test
