@@ -50,12 +50,13 @@ phpstan:
 phpunit:
   image: 
     name: serversideup/php:8.4-cli
-  user: "root:root"
   stage: test
   services:
     - name: mysql:8.0
       alias: db_test
   variables:
+    PUID: "0"
+    PGID: "0"
     MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     MYSQL_DATABASE: critipixel_test
     # 💡 CORRECTION : L'hôte est "db_test" (l'alias) et le nom de bdd correspond à MYSQL_DATABASE
