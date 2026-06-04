@@ -55,8 +55,6 @@ phpunit:
     - name: mysql:8.0
       alias: db_test
   variables:
-    PUID: "0"
-    PGID: "0"
     MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     MYSQL_DATABASE: critipixel_test
     # 💡 CORRECTION : L'hôte est "db_test" (l'alias) et le nom de bdd correspond à MYSQL_DATABASE
@@ -65,7 +63,9 @@ phpunit:
   dependencies:
     - install_dependencies
   before_script:    
-    - install-php-extensions intl
+    - curl -sSL https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions -o /tmp/install-php-extensions
+    - chmod +x /tmp/install-php-extensions
+    - sudo /tmp/install-php-extensions intl
     # Préparation de la base de données de test
     - php bin/console doctrine:database:drop --force --if-exists --env=test
     - php bin/console doctrine:database:create --if-not-exists --env=test
@@ -75,5 +75,5 @@ phpunit:
     - php bin/console importmap:install --env=test
     - php bin/console sass:build --env=test
   script:
-    - php bin/phpunit --coverage-text --colors=never
+    - php bin/phpunit --colors=never
   allow_failure: false
