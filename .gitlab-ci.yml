@@ -62,7 +62,7 @@ phpunit:
   dependencies:
     - install_dependencies
   before_script:    
-    - install-php-extensions intl
+    - sudo install-php-extensions intl
     # Préparation de la base de données de test
     - php bin/console doctrine:database:drop --force --if-exists --env=test
     - php bin/console doctrine:database:create --if-not-exists --env=test
