@@ -63,7 +63,7 @@ phpunit:
     - install_dependencies
   before_script:    
     - apt-get update && apt-get install -y libicu-dev
-    - docker-php-ext-install intl
+    - docker-php-ext-install intl pdo_mysql
     # Préparation de la base de données de test
     - php bin/console doctrine:database:drop --force --if-exists --env=test
     - php bin/console doctrine:database:create --if-not-exists --env=test
