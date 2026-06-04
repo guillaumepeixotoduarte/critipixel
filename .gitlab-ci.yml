@@ -48,8 +48,7 @@ phpstan:
     - vendor/bin/phpstan analyse src tests --level=9 --memory-limit=-1
 
 phpunit:
-  image: 
-    name: serversideup/php:8.4-cli
+  image: php:8.4-cli
   stage: test
   services:
     - name: mysql:8.0
