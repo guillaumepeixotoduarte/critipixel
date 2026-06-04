@@ -50,7 +50,7 @@ phpstan:
 phpunit:
   image: 
     name: serversideup/php:8.4-cli
-    user: "root:root"
+  user: "root:root"
   stage: test
   services:
     - name: mysql:8.0
