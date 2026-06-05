@@ -59,14 +59,6 @@ final class VideoGameFixtures extends Fixture implements DependentFixtureInterfa
             }
         }
 
-        $methodMap = [
-            1 => 'increaseOne',
-            2 => 'increaseTwo',
-            3 => 'increaseThree',
-            4 => 'increaseFour',
-            5 => 'increaseFive',
-        ];
-
         array_walk($videoGames, [$manager, 'persist']);
 
         // TODO : Ajouter des reviews aux vidéos
@@ -97,21 +89,7 @@ final class VideoGameFixtures extends Fixture implements DependentFixtureInterfa
             $this->calculateAverageRating->calculateAverage($videoGame);
         }
 
-
-        $reviews = array_fill_callback(0, 30, function (int $index) use ($users, $videoGames) {
-            $review = (new Review);
-            /** @var VideoGame $videoGame */
-            $videoGame = $videoGames[$this->faker->numberBetween(0, count($videoGames) - 1)];
-            $review->setRating($this->faker->numberBetween(1, 5))
-                ->setVideoGame($videoGame)
-                ->setUser($users[$this->faker->numberBetween(0, count($users) - 1)])
-                ->setComment($this->faker->paragraph(3, true));
-
-            return $review;
-        });
-
         array_walk($videoGames, [$manager, 'persist']);
-        array_walk($reviews, [$manager, 'persist']);
 
         $manager->flush();
     }
