@@ -44,8 +44,8 @@ final class VideoGameFixtures extends Fixture implements DependentFixtureInterfa
             return $videoGame;
         });
 
-        // TODO : Ajouter les tags aux vidéos
-        
+        // TODO : Ajouter les tags aux vidéos 
+
         /** @var VideoGame $videoGame */
         foreach ($videoGames as $videoGame) {
             // On mélange le tableau de tags pour en piocher au hasard
