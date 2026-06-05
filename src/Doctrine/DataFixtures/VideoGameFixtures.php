@@ -62,6 +62,7 @@ final class VideoGameFixtures extends Fixture implements DependentFixtureInterfa
         array_walk($videoGames, [$manager, 'persist']);
 
         // TODO : Ajouter des reviews aux vidéos
+        
         /** @var VideoGame $videoGame */
         foreach($videoGames as $videoGame) {
             // On mélange le tableau d'utilisateurs pour en piocher au hasard
